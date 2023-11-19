@@ -4,7 +4,7 @@ import { ModeToggle } from "./ui/toggle-mode";
 
 export default function Nav() {
   return (
-    <header>
+    <header className="p-8">
       <nav>
         <ul className="flex items-center justify-between">
           <li>
