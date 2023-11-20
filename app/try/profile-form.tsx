@@ -140,7 +140,7 @@ export function ProfileForm() {
                   className="grid max-w-md grid-cols-2 gap-8 pt-5"
                 >
                   <FormItem>
-                    <FormLabel className="[&:has([data-state=checked])>div]:border-primary">
+                    <FormLabel className="[&:has([data-state=checked])>div]:border-primary cursor-pointer">
                       <FormControl>
                         <RadioGroupItem value="moral1" className="sr-only"/>
                       </FormControl>
@@ -159,7 +159,7 @@ export function ProfileForm() {
                     </FormLabel>
                   </FormItem>
                   <FormItem>
-                    <FormLabel className="[&:has([data-state=checked])>div]:border-primary">
+                    <FormLabel className="[&:has([data-state=checked])>div]:border-primary cursor-pointer">
                       <FormControl>
                         <RadioGroupItem value="moral2" className="sr-only" />
                       </FormControl>
