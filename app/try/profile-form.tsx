@@ -1,11 +1,19 @@
 "use client";
 
-import Link from "next/link";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -17,23 +25,35 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Switch } from "@/components/ui/switch";
+import { useState } from "react";
+
+const learning = {
+  "Reading Skills": {
+    "Pre-Kindergarten":
+      "The story is to a pre-kindergarten students; in the story, the characters learn about the alphabet.",
+    Kindergarten:
+      "Make the story fun for a child in kindergarten. In one part of the story, the main character should learn how to spell their name.",
+    "Grade 1":
+      "Integrate a basic phonics lesson into the story; the story should go over some common sight words.",
+  },
+  Math: {
+    "Pre-Kindergarten":
+      "Weave counting into the story; make it fun & accessible to the young reader.",
+    Kindergarten:
+      "Include basic addition & subtraction at the kindergarten level in the story.",
+    "Grade 1":
+      "Some grade 1 level math should be included in the story; the characters should need to apply their knowledge of math to solve a problem.",
+  },
+  History: {
+    "Pre-Kindergarten":
+      "In the story, the characters should learn about the Canadian flag & what is represents.",
+    Kindergarten:
+      "Include Marco Polo as one of the characters; have the other characters go on daring adventures with Marco.",
+    "Grade 1":
+      "In the course of the story, the characters should meet Leonardo da Vinci. They learn about Leonardo's inventions & go on an adventure with him.",
+  },
+};
 
 const profileFormSchema = z.object({
   name: z
@@ -46,9 +66,7 @@ const profileFormSchema = z.object({
     }),
   age: z.string(),
   storyThemes: z.string(),
-  moral: z.enum(["moral1", "moral2", "moral3", "moral4"], {
-    required_error: "Please select a moral.",
-  }),
+  eduPrompt: z.string(),
 });
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
@@ -57,6 +75,9 @@ type ProfileFormValues = z.infer<typeof profileFormSchema>;
 const defaultValues: Partial<ProfileFormValues> = {};
 
 export function ProfileForm() {
+  // TODO: Sync this with the default values
+  const [eduContentToggle, setEduContentToggle] = useState(false);
+
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues,
@@ -64,17 +85,29 @@ export function ProfileForm() {
   });
 
   function onSubmit(data: ProfileFormValues) {
+    console.table(form.getValues().eduPrompt);
     console.log("Generating story...");
+  }
+
+  function ageToGrade(age: number) {
+    if (age <= 3) return "Pre-Kindergarten";
+    if (age <= 6) return "Kindergarten";
+    if (age <= 7) return "Grade 1";
+    return "";
+  }
+
+  function toggleEduCards() {
+    setEduContentToggle(!eduContentToggle);
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 pl-5">
         <FormField
           control={form.control}
           name="name"
           render={({ field }) => (
-            <FormItem className="pl-5 pt-8 mr-80">
+            <FormItem className="pt-8 mr-80">
               <FormLabel>Child&apos;s Name</FormLabel>
               <FormControl>
                 <Input placeholder="Ex: Olivia, Flor, Cole..." {...field} />
@@ -90,7 +123,7 @@ export function ProfileForm() {
           control={form.control}
           name="age"
           render={({ field }) => (
-            <FormItem className="pl-5 mr-80">
+            <FormItem className="mr-80">
               <FormLabel>Child&apos;s Age</FormLabel>
               <FormControl>
                 <Input placeholder="Ex: 4" {...field} />
@@ -107,7 +140,7 @@ export function ProfileForm() {
           control={form.control}
           name="storyThemes"
           render={({ field }) => (
-            <FormItem className="pl-5 mr-80">
+            <FormItem className="mr-80">
               <FormLabel>Interests</FormLabel>
               <FormControl>
                 <Input
@@ -123,66 +156,82 @@ export function ProfileForm() {
             </FormItem>
           )}
         />
-        <div className="pl-5">
+        <FormField
+          render={() => (
+            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 mr-80">
+              <div className="space-y-0.5">
+                <FormLabel>Include Educational Content</FormLabel>
+                <FormDescription>
+                  Include lessons from phonics, math or history in the story.
+                </FormDescription>
+              </div>
+              <FormControl>
+                <Switch
+                  checked={eduContentToggle}
+                  onCheckedChange={toggleEduCards}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+          name={""}
+        />
+        {eduContentToggle ? (
           <FormField
             control={form.control}
-            name="moral"
+            name="eduPrompt"
             render={({ field }) => (
               <FormItem className="space-y-1">
-                <FormLabel>Choose a Moral</FormLabel>
+                <FormLabel>Educational Content</FormLabel>
                 <FormDescription>
-                  We know from He-Man that every good story needs a moral, you
-                  get to decide what it is!
+                  We know from He-Man that every good story needs to impart
+                  wisdom, you get to decide what it is!
                 </FormDescription>
                 <RadioGroup
                   onValueChange={field.onChange}
                   defaultValue={field.value}
                   className="grid max-w-md grid-cols-2 gap-8 pt-5"
                 >
-                  <FormItem>
-                    <FormLabel className="[&:has([data-state=checked])>div]:border-primary cursor-pointer">
-                      <FormControl>
-                        <RadioGroupItem value="moral1" className="sr-only"/>
-                      </FormControl>
-                      <Card>
-                        <CardHeader>
-                          <CardTitle>Card Title</CardTitle>
-                          <CardDescription>Card Description</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                          <p>Card Content</p>
-                        </CardContent>
-                        <CardFooter>
-                          <p>Card Footer</p>
-                        </CardFooter>
-                      </Card>
-                    </FormLabel>
-                  </FormItem>
-                  <FormItem>
-                    <FormLabel className="[&:has([data-state=checked])>div]:border-primary cursor-pointer">
-                      <FormControl>
-                        <RadioGroupItem value="moral2" className="sr-only" />
-                      </FormControl>
-                      <Card>
-                        <CardHeader>
-                          <CardTitle>Card Title</CardTitle>
-                          <CardDescription>Card Description</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                          <p>Card Content</p>
-                        </CardContent>
-                        <CardFooter>
-                          <p>Card Footer</p>
-                        </CardFooter>
-                      </Card>
-                    </FormLabel>
-                  </FormItem>
+                  {Object.keys(learning).map((topic: string) => (
+                    <FormItem key={topic}>
+                      <FormLabel className="[&:has([data-state=checked])>div]:border-primary cursor-pointer">
+                        <FormControl>
+                          <RadioGroupItem
+                            value={
+                              learning[topic][
+                                ageToGrade(Number(form.getValues().age))
+                              ]
+                            }
+                            className="sr-only"
+                          />
+                        </FormControl>
+                        <Card>
+                          <CardHeader>
+                            <CardTitle>{topic}</CardTitle>
+                            <CardDescription>
+                              {ageToGrade(Number(form.getValues().age))}
+                            </CardDescription>
+                          </CardHeader>
+                          <CardContent>
+                            <p>
+                              {
+                                learning[topic][
+                                  ageToGrade(Number(form.getValues().age))
+                                ]
+                              }
+                            </p>
+                          </CardContent>
+                        </Card>
+                      </FormLabel>
+                    </FormItem>
+                  ))}
                 </RadioGroup>
               </FormItem>
             )}
           ></FormField>
-        </div>
-        <div className="pl-5 pb-5">
+        ) : (
+          <></>
+        )}
+        <div className="pb-5">
           <Button type="submit">Create a story!</Button>
         </div>
       </form>
