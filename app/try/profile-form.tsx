@@ -28,6 +28,11 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@radix-ui/react-hover-card";
 
 const learning = {
   "Reading Skills": {
@@ -197,7 +202,7 @@ export function ProfileForm() {
                   <RadioGroup
                     onValueChange={field.onChange}
                     defaultValue={field.value}
-                    className="grid max-w-md grid-cols-2 gap-8 pt-5"
+                    className="grid max-w-2xl grid-cols-3 pt-5 space-x-3"
                   >
                     {Object.keys(learning).map((topic: string) => (
                       <FormItem key={topic}>
@@ -220,13 +225,31 @@ export function ProfileForm() {
                               </CardDescription>
                             </CardHeader>
                             <CardContent>
-                              <p>
-                                {
-                                  learning[topic][
-                                    ageToGrade(Number(form.getValues().age))
-                                  ]
-                                }
-                              </p>
+                              <HoverCard>
+                                <HoverCardTrigger asChild>
+                                  <Button variant="secondary" type="button">
+                                    View Prompt
+                                  </Button>
+                                </HoverCardTrigger>
+                                <HoverCardContent className="w-80">
+                                  <div className="flex justify-between space-x-4 p-5 overflow-hidden rounded-[0.5rem] border bg-background shadow">
+                                    <div className="space-y-1">
+                                      <h4 className="text-sm font-semibold">
+                                        AI Prompt
+                                      </h4>
+                                      <p className="text-sm">
+                                        {
+                                          learning[topic][
+                                            ageToGrade(
+                                              Number(form.getValues().age)
+                                            )
+                                          ]
+                                        }
+                                      </p>
+                                    </div>
+                                  </div>
+                                </HoverCardContent>
+                              </HoverCard>
                             </CardContent>
                           </Card>
                         </FormLabel>
@@ -240,6 +263,7 @@ export function ProfileForm() {
             <></>
           )}
           <Button type="submit">Create a story!</Button>
+          <div className="pb-1"></div>
         </form>
       </Form>
     </div>
