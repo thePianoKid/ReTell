@@ -35,26 +35,26 @@ export default function Story() {
     },
   ];
 
-//   useEffect(() => {
-//     fetch("https://api.openai.com/v1/chat/completions", {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//         Authorization: `Bearer ${process.env.openAiKey}`,
-//       },
-//       body: JSON.stringify({
-//         model: "gpt-3.5-turbo",
-//         messages: reqBody,
-//       }),
-//     })
-//       .then((res) => res.json())
-//       .then((data) => {
-//         setTitle(`A Story Just for ${name}`);
-//         setStory(data.choices[0].message.content);
-//         setLoading(false);
-//       });
-//     // eslint-disable-next-line react-hooks/exhaustive-deps
-//   }, []);
+  useEffect(() => {
+    fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.openAiKey}`,
+      },
+      body: JSON.stringify({
+        model: "gpt-3.5-turbo",
+        messages: reqBody,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setTitle(`A Story Just for ${name}`);
+        setStory(data.choices[0].message.content);
+        setLoading(false);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (isLoading) {
     return (
