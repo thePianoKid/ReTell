@@ -39,7 +39,7 @@ const PROMPT_MAP = {
     "Pre-Kindergarten":
       "The story is to a pre-kindergarten students; in the story, the characters learn about the alphabet.",
     Kindergarten:
-      "Make the story fun for a child in kindergarten. In one part of the story, the main character should learn how to spell their name.",
+      "Make the story fun for a child in kindergarten. In one part of the story, the main character should learn how to spell their name. Make the character spell each letter out.",
     "Grade 1":
       "Integrate a basic phonics lesson into the story; the story should go over some common sight words.",
   },
