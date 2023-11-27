@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     env: {
-        openAiKey: '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',
+        openAiKey: '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',
     },
 }
 
