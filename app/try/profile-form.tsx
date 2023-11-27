@@ -34,7 +34,7 @@ import {
   HoverCardTrigger,
 } from "@radix-ui/react-hover-card";
 
-const learning = {
+const PROMPT_MAP = {
   "Reading Skills": {
     "Pre-Kindergarten":
       "The story is to a pre-kindergarten students; in the story, the characters learn about the alphabet.",
@@ -204,13 +204,13 @@ export function ProfileForm() {
                     defaultValue={field.value}
                     className="grid max-w-2xl grid-cols-3 pt-5 space-x-3"
                   >
-                    {Object.keys(learning).map((topic: string) => (
+                    {Object.keys(PROMPT_MAP).map((topic: string) => (
                       <FormItem key={topic}>
                         <FormLabel className="[&:has([data-state=checked])>div]:border-primary cursor-pointer">
                           <FormControl>
                             <RadioGroupItem
                               value={
-                                learning[topic][
+                                PROMPT_MAP[topic as keyof typeof z.string][
                                   ageToGrade(Number(form.getValues().age))
                                 ]
                               }
@@ -239,7 +239,7 @@ export function ProfileForm() {
                                       </h4>
                                       <p className="text-sm">
                                         {
-                                          learning[topic][
+                                          PROMPT_MAP[topic as keyof typeof z.string][
                                             ageToGrade(
                                               Number(form.getValues().age)
                                             )
